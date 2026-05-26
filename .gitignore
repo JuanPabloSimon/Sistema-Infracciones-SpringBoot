@@ -1,0 +1,64 @@
+# ========================
+# Maven
+# ========================
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ========================
+# Spring Boot
+# ========================
+*.jar
+*.war
+*.ear
+spring-shell.log
+
+# ========================
+# Variables de entorno y secretos
+# ========================
+.env
+*.env
+application-local.properties
+application-secret.properties
+
+# ========================
+# IntelliJ IDEA
+# ========================
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# ========================
+# Eclipse
+# ========================
+.classpath
+.project
+.settings/
+bin/
+
+# ========================
+# NetBeans
+# ========================
+nbactions.xml
+nb-configuration.xml
+
+# ========================
+# VS Code
+# ========================
+.vscode/
+
+# ========================
+# Sistema operativo
+# ========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ========================
+# Logs
+# ========================
+*.log
+logs/

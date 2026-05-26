@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Infracciones de Tránsito</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div>
+      <div class="navbar-title">Sistema de Infracciones</div>
+      <div class="navbar-subtitle">Gestion de Infracciones de Transito y Actas de Constatación</div>
+    </div>
+  </div>
+</nav>
+
+<section id="seccion-menu">
+  <h2 class="seccion-titulo">Que queres cargar?</h2>
+  <p class="seccion-subtitulo">Selecciona una opcion para continuar</p>
+
+  <div class="menu-grid">
+    <div class="menu-card" onclick="mostrarCargar()">
+      <div class="menu-card-icon">📋</div>
+      <div class="menu-card-label">Infraccion</div>
+    </div>
+
+    <div class="menu-card" onclick="mostrarVer()">
+      <div class="menu-card-icon">🔍</div>
+      <div class="menu-card-label">Ver Infracciones</div>
+    </div>
+
+    <div class="menu-card" onclick="mostrarConductores()">
+      <div class="menu-card-icon">👤</div>
+      <div class="menu-card-label">Conductores</div>
+    </div>
+
+    <div class="menu-card deshabilitado">
+      <div class="menu-card-icon">📄</div>
+      <div class="menu-card-label">Acta</div>
+    </div>
+
+    <div class="menu-card deshabilitado">
+      <div class="menu-card-icon">👮</div>
+      <div class="menu-card-label">Autoridad</div>
+    </div>
+
+    <div class="menu-card deshabilitado">
+      <div class="menu-card-icon">🚗</div>
+      <div class="menu-card-label">Vehiculo</div>
+    </div>
+
+    <div class="menu-card deshabilitado">
+      <div class="menu-card-icon">📜</div>
+      <div class="menu-card-label">Licencias</div>
+    </div>
+
+    <div class="menu-card deshabilitado">
+      <div class="menu-card-icon">🏛️</div>
+      <div class="menu-card-label">Organizaciones</div>
+    </div>
+
+    <div class="menu-card deshabilitado">
+      <div class="menu-card-icon">🗺️</div>
+      <div class="menu-card-label">Ruta</div>
+    </div>
+  </div>
+</section>
+
+<section id="seccion-cargar">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-titulo">Nueva Infraccion</h3>
+      <button class="btn-volver" onclick="mostrarMenu()">← Volver</button>
+    </div>
+
+    <form id="form-infraccion">
+
+      <!-- Conductor -->
+      <div class="form-group">
+        <label class="form-label">Conductor *</label>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <select id="select-conductor" class="form-control" required>
+            <option value="">Selecciona un conductor...</option>
+          </select>
+          <button type="button" class="btn btn-celeste"
+                  style="white-space:nowrap; padding: 12px 16px;"
+                  onclick="toggleFormConductor()">
+            + Nuevo
+          </button>
+        </div>
+      </div>
+
+      <div id="form-conductor-nuevo" style="display:none;" class="form-inline-card">
+        <p class="form-inline-title">Nuevo Conductor</p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nombre *</label>
+            <input type="text" id="nuevo-nombre" class="form-control"
+                   placeholder="Ej: Juan" required minlength="2">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Apellido *</label>
+            <input type="text" id="nuevo-apellido" class="form-control"
+                   placeholder="Ej: Perez" required minlength="2">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">DNI *</label>
+            <input type="number" id="nuevo-dni" class="form-control"
+                   placeholder="Ej: 38123456" required min="1000000" max="99999999">
+          </div>
+          <div class="form-group">
+            <label class="form-label">N° Licencia *</label>
+            <input type="text" id="nuevo-licencia" class="form-control"
+                   placeholder="Ej: LIC-003" required minlength="3">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Domicilio *</label>
+          <input type="text" id="nuevo-domicilio" class="form-control"
+                 placeholder="Ej: San Martin 1234, Mendoza" required minlength="5">
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:5px;">
+          <button type="button" class="btn btn-secondary" onclick="toggleFormConductor()">Cancelar</button>
+          <button type="button" class="btn btn-primary" onclick="guardarConductorNuevo()">Guardar Conductor</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Descripcion de la infraccion</label>
+        <textarea id="input-descripcion" class="form-control"
+                  rows="3" placeholder="Describe brevemente la infraccion..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Importe ($) *</label>
+          <input type="number" id="input-importe" class="form-control"
+                 placeholder="Ej: 80000" min="0" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha *</label>
+          <input type="date" id="input-fecha" class="form-control" required max="">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tipos de infraccion * (selecciona uno o mas)</label>
+        <div id="tipos-grid" class="tipos-grid">
+          <div class="spinner">Cargando tipos...</div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn btn-secondary" onclick="mostrarMenu()">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="guardarInfraccion(event)">Guardar Infraccion</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="seccion-ver">
+  <div class="seccion-header">
+    <h3 class="card-titulo">Infracciones Registradas</h3>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button class="btn btn-celeste" onclick="mostrarCargar()">+ Nueva Infraccion</button>
+      <button class="btn-volver" onclick="mostrarMenu()">← Volver</button>
+    </div>
+  </div>
+
+  <div id="contadores" class="contadores-bar"></div>
+
+  <div class="filtros-bar">
+    <span class="filtros-label">Filtrar por:</span>
+    <button class="btn-filtro activo" onclick="filtrar('todas', this)">Todas</button>
+    <button class="btn-filtro grave" onclick="filtrar('Grave', this)">Graves</button>
+    <button class="btn-filtro media" onclick="filtrar('Media', this)">Medias</button>
+    <button class="btn-filtro leve" onclick="filtrar('Leve', this)">Leves</button>
+  </div>
+
+  <div class="tabla-container">
+    <table class="tabla-infracciones">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Conductor</th>
+          <th>DNI</th>
+          <th>Descripcion</th>
+          <th>Tipos</th>
+          <th>Importe</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-body">
+        <tr><td colspan="8" class="tabla-vacia"><div class="spinner">Cargando infracciones...</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<section id="seccion-conductores">
+  <div class="seccion-header">
+    <h3 class="card-titulo">Conductores Registrados</h3>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button class="btn btn-celeste" onclick="toggleFormNuevoConductorVista()">+ Nuevo Conductor</button>
+      <button class="btn-volver" onclick="mostrarMenu()">← Volver</button>
+    </div>
+  </div>
+
+  <div id="form-conductor-vista" style="display:none; margin-bottom:20px;" class="card">
+    <div class="card-header">
+      <h3 class="card-titulo" style="font-size:16px;">Nuevo Conductor</h3>
+      <button class="btn-volver" onclick="toggleFormNuevoConductorVista()">✕ Cerrar</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Nombre *</label>
+        <input type="text" id="vista-nombre" class="form-control" placeholder="Ej: Juan">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Apellido *</label>
+        <input type="text" id="vista-apellido" class="form-control" placeholder="Ej: Perez">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">DNI *</label>
+        <input type="number" id="vista-dni" class="form-control" placeholder="Ej: 38123456"
+               min="1000000" max="99999999">
+      </div>
+      <div class="form-group">
+        <label class="form-label">N° Licencia *</label>
+        <input type="text" id="vista-licencia" class="form-control" placeholder="Ej: LIC-003">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Domicilio *</label>
+      <input type="text" id="vista-domicilio" class="form-control" placeholder="Ej: San Martin 1234, Mendoza">
+    </div>
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-secondary" onclick="toggleFormNuevoConductorVista()">Cancelar</button>
+      <button type="button" class="btn btn-primary" onclick="guardarConductorDesdeVista()">Guardar Conductor</button>
+    </div>
+  </div>
+
+  <div class="tabla-container">
+    <table class="tabla-infracciones">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>DNI</th>
+          <th>Domicilio</th>
+          <th>N° Licencia</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-conductores-body">
+        <tr><td colspan="7" class="tabla-vacia"><div class="spinner">Cargando conductores...</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<div id="toast" class="toast"></div>
+
+
+<script th:src="@{/js/config.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+
+<script>
+  /* Formulario mini conductor (desde cargar infraccion) */
+  function toggleFormConductor() {
+    const form = document.getElementById('form-conductor-nuevo');
+    const visible = form.style.display !== 'none';
+    form.style.display = visible ? 'none' : 'block';
+    if (visible) {
+      ['nuevo-nombre','nuevo-apellido','nuevo-dni','nuevo-licencia','nuevo-domicilio']
+        .forEach(id => document.getElementById(id).value = '');
+    }
+  }
+
+  async function guardarConductorNuevo() {
+    const nombre    = document.getElementById('nuevo-nombre').value.trim();
+    const apellido  = document.getElementById('nuevo-apellido').value.trim();
+    const dni       = document.getElementById('nuevo-dni').value.trim();
+    const licencia  = document.getElementById('nuevo-licencia').value.trim();
+    const domicilio = document.getElementById('nuevo-domicilio').value.trim();
+
+    if (!validarCamposConductor(nombre, apellido, dni, licencia, domicilio)) return;
+
+    const conductor = { nombre, apellido, dni: parseInt(dni), numeroLicencia: licencia, domicilio };
+    try {
+      const res = await fetch(`${API_BASE}/conductores`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(conductor)
+      });
+      if (res.ok) {
+        const nuevo = await res.json();
+        mostrarToast(`Conductor ${nombre} ${apellido} guardado`);
+        const select = document.getElementById('select-conductor');
+        const option = document.createElement('option');
+        option.value = nuevo.id;
+        option.textContent = `${nuevo.nombre} ${nuevo.apellido} - DNI: ${nuevo.dni}`;
+        select.appendChild(option);
+        select.value = nuevo.id;
+        toggleFormConductor();
+      } else if (res.status === 500) {
+        mostrarToast('El DNI ya existe en el sistema', 'error');
+      } else {
+        mostrarToast('Error al guardar conductor', 'error');
+      }
+    } catch (e) {
+      mostrarToast('Error de conexion', 'error');
+    }
+  }
+
+  /* Formulario conductor desde vista conductores */
+  function toggleFormNuevoConductorVista() {
+    const form = document.getElementById('form-conductor-vista');
+    const visible = form.style.display !== 'none';
+    form.style.display = visible ? 'none' : 'block';
+    if (visible) {
+      ['vista-nombre','vista-apellido','vista-dni','vista-licencia','vista-domicilio']
+        .forEach(id => document.getElementById(id).value = '');
+    }
+  }
+</script>
+
+</body>
+</html>
