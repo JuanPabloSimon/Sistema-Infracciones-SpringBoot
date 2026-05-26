@@ -1,6 +1,6 @@
 # Sistema de Infracciones de Tránsito
 
-Aplicación web desarrollada con **Spring Boot** para la gestión de infracciones de tránsito. Permite registrar conductores, tipos de infracción y actas de infracción, con una interfaz web simple e intuitiva.
+Aplicación web desarrollada con **Spring Boot** para la gestión de infracciones de tránsito. Permite registrar conductores, tipos de infracción y actas de infracción, con una interfaz web simple e intuitiva. Creada como proyecto Facultativo en la materia "Programación Orientada a Objetos"
 
 ## Tecnologías
 
